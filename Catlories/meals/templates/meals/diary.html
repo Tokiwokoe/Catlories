@@ -1,0 +1,23 @@
+{% extends 'progress_analyzer/base.html' %}
+{% block content %}
+{% if user.is_authenticated %}
+<div style="display: flex; align-items: center;">
+  <img src="/media/icons/morning_kitty.png" alt="Завтрак" style="width: 64px; height: 64px; margin-right: 10px;">
+  <h1>Завтрак</h1>
+</div>
+<div style="display: flex; align-items: center;">
+  <img src="/media/icons/eating_kitty.png" alt="Обед" style="width: 64px; height: 64px; margin-right: 10px;">
+  <h1>Обед</h1>
+</div>
+<div style="display: flex; align-items: center;">
+  <img src="/media/icons/beer_kitty.png" alt="Ужин" style="width: 64px; height: 64px; margin-right: 10px;">
+  <h1>Ужин</h1>
+</div>
+<div style="display: flex; align-items: center;">
+  <img src="/media/icons/icecream_kitty.png" alt="Перекус" style="width: 64px; height: 64px; margin-right: 10px;">
+  <h1>Перекус</h1>
+</div>
+{% else %}
+<h1>Войдите в аккаунт</h1>
+{% endif %}
+{% endblock content %}

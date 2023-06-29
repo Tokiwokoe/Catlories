@@ -1,0 +1,9 @@
+{% extends 'progress_analyzer/base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<h1>Привет, зарегистрированный друг</h1>
+{% else %}
+<h1>Привет, друг</h1>
+{% endif %}
+{% endblock content %}

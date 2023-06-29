@@ -1,5 +1,6 @@
 from django.db import models
 from psqlextra.indexes import UniqueIndex
+from profiles.models import Profile
 
 
 class Ingredient(models.Model):
@@ -31,6 +32,7 @@ class MealType(models.Model):
 
 
 class Meal(models.Model):
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     meal_type = models.ForeignKey(MealType, on_delete=models.CASCADE)
     dish = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     grams = models.IntegerField()

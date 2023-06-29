@@ -42,13 +42,14 @@ class Goal(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField()
     name = models.CharField(max_length=20)
     sex = models.ForeignKey(Sex, on_delete=models.CASCADE)
     birth_date = models.DateField()
     weight_kg = models.FloatField()
-    height_cm = models.FloatField()
+    height_cm = models.IntegerField()
     activity_level = models.ForeignKey(ActivityLevel, on_delete=models.CASCADE)
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.user.username} Profile'
+        return f'Профиль пользователя {self.user.username}'
