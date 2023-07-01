@@ -1,4 +1,3 @@
-import random
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.views.generic import UpdateView
@@ -31,7 +30,7 @@ class UpdateProfile(UpdateView):
 
     def form_valid(self, form):
         if not form.instance.image:
-            form.instance.image = f"uploads/profile_pics/default/{random.choice(['bob.png', 'crabs.png', 'patrick.png', 'squid.png'])}"
+            form.instance.image = 'uploads/profile_pics/default/angel_kitty.png'
         return super().form_valid(form)
 
     def get_success_url(self):

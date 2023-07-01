@@ -1,14 +1,10 @@
 {% extends 'progress_analyzer/base.html' %}
 {% block content %}
 <div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="card col-md-6 col-sm-12 col-xs-12 d-flex flex-row align-items-center p-3 shadow">
-            <img class="rounded-circle mr-4" height="150" width="150" src="{{ image }}">
-        </div>
-    </div>
-
-    <div class="row justify-content-center mt-5">
-        <div class="card col-md-6 col-sm-12 col-xs-12 p-3 shadow">
+    <div style="margin-top: 75px; text-align: center;">
+        {% if username == user.username %}
+        <div>
+            <img src="{{ image }}" style="width: 150px; height: 150px;">
             <h3>Имя: {{ name }}</h3>
             <h3>Пол: {{ sex }}</h3>
             <h3>Дата рождения: {{ birth_date }}</h3>
@@ -16,10 +12,12 @@
             <h3>Рост: {{ height_cm }} см</h3>
             <h3>Уровень активности: {{ activity_level }}</h3>
             <h3>Цель: {{ goal }}</h3>
-            {% if username == user.username %}
-            <a href="{% url 'update-profile' user.profile.pk %}"><button type="button">Изменить личные данные</button></a>
-            {% endif %}
+            <a href="{% url 'update_profile' user.profile.pk %}"><button type="button">Изменить личные данные</button></a>
+            {% else %}
+            <img src="/media/icons/space_kitty.png" alt="Страница не найдена" style="width: 512px; height: 512px;">
+            <h1 style="font-size: 64px">Страница не найдена</h1>
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock content %}
