@@ -1,3 +1,5 @@
+{% extends 'progress_analyzer/base.html' %}
+{% block content %}
 <div class="container">
     <div class="row justify-content-center mt-5">
         <div class="card col-md-6 col-sm-12 col-xs-12 d-flex flex-row align-items-center p-3 shadow">
@@ -7,10 +9,17 @@
 
     <div class="row justify-content-center mt-5">
         <div class="card col-md-6 col-sm-12 col-xs-12 p-3 shadow">
-            <h5>Name: {{ name }}</h5><a href="{% url 'update-profile' user.profile.pk %}">
+            <h3>Имя: {{ name }}</h3>
+            <h3>Пол: {{ sex }}</h3>
+            <h3>Дата рождения: {{ birth_date }}</h3>
+            <h3>Вес: {{ weight_kg }} кг</h3>
+            <h3>Рост: {{ height_cm }} см</h3>
+            <h3>Уровень активности: {{ activity_level }}</h3>
+            <h3>Цель: {{ goal }}</h3>
             {% if username == user.username %}
-            <button type="button">Изменить личные данные</button></a>
+            <a href="{% url 'update-profile' user.profile.pk %}"><button type="button">Изменить личные данные</button></a>
             {% endif %}
         </div>
     </div>
 </div>
+{% endblock content %}

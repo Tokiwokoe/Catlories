@@ -1,0 +1,27 @@
+body {
+  background-color: WhiteSmoke;
+  margin-left: 30px;
+  margin-bottom: 40px;
+  margin-top: 20px;
+}
+
+h1 {
+  color: Teal;
+  margin-top: 40px;
+}
+
+.nav-link {
+  color: Teal;
+  font-size: 24px;
+  font-family: Courier New;
+  margin-right: 40px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+img {
+  width: 64px;
+  height: 64px;
+  margin-right: 10px;
+}
