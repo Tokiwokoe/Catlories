@@ -42,7 +42,7 @@ class Goal(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='profile_pics/uploads')
     name = models.CharField(max_length=20)
     sex = models.ForeignKey(Sex, on_delete=models.CASCADE)
     birth_date = models.DateField()

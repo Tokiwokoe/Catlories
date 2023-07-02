@@ -3,7 +3,7 @@ from .models import Profile, Sex, ActivityLevel, Goal
 
 
 class ProfileForm(forms.Form):
-    image = forms.ImageField(label='Аватар')
+    image = forms.ImageField(required=False, label='Аватар')
     name = forms.CharField(max_length=32, label='Имя')
     sex = forms.ModelChoiceField(queryset=Sex.objects.all(), label='Пол')
     birth_date = forms.DateField(label='Дата рождения')
@@ -17,17 +17,18 @@ class ProfileForm(forms.Form):
         image = self.cleaned_data.get('image')
         if not image:
             self.cleaned_data['image'] = 'profile_pics/default/angel_kitty.png'
+        return self.cleaned_data
 
     def signup(self, request, user):
         user.save()
         profile = Profile()
         profile.user = user
-        profile.image = self.cleaned_data.get('image')
+        profile.image = self.cleaned_data['image']
         profile.name = self.cleaned_data['name']
-        profile.sex = self.cleaned_data.get('sex')
-        profile.birth_date = self.cleaned_data.get('birth_date')
-        profile.weight_kg = self.cleaned_data.get('weight_kg')
-        profile.height_cm = self.cleaned_data.get('height_cm')
-        profile.activity_level = self.cleaned_data.get('activity_level')
-        profile.goal = self.cleaned_data.get('goal')
+        profile.sex = self.cleaned_data['sex']
+        profile.birth_date = self.cleaned_data['birth_date']
+        profile.weight_kg = self.cleaned_data['weight_kg']
+        profile.height_cm = self.cleaned_data['height_cm']
+        profile.activity_level = self.cleaned_data['activity_level']
+        profile.goal = self.cleaned_data['goal']
         profile.save()
