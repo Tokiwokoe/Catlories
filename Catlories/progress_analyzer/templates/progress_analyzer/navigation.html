@@ -1,14 +1,13 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'styles.css' %}">
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav>
     {% if user.is_authenticated %}
     <a class="nav-link" href="{% url 'index' %}"><img src="/media/icons/science_kitty.png" alt="Моя статистика">Моя статистика</a>
     <a class="nav-link" href="{% url 'diary' %}"><img src="/media/icons/reading_kitty.png" alt="Дневник питания">Дневник питания</a>
-    <a class="nav-link" href="{% url 'profile' user.username %}"><img src="{{ user.profile.image.url }}" class="d-inline-block rounded-circle" alt="Мой профиль">Мой профиль</a>
+    <a class="nav-link" href="{% url 'profile' user.username %}"><img src="{{ user.profile.image.url }}" alt="Мой профиль">Мой профиль</a>
     <a class="nav-link" href="{% url 'account_logout' %}"><img src="/media/icons/door.png" alt="Выход" style="width: 60px; height: 60px">Выход</a>
     {% else %}
     <a class="nav-link" href="{% url 'account_signup' %}">Зарегистрироваться</a>
     <a class="nav-link" href="{% url 'account_login' %}">Войти в аккаунт</a>
     {% endif %}
-    <span class="navbar-toggler-icon"></span>
 </nav>

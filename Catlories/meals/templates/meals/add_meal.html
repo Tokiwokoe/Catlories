@@ -1,0 +1,15 @@
+{% extends 'progress_analyzer/base.html' %}
+{% block content %}
+{% if user.is_authenticated %}
+<form action="{% url 'add_meal'%}" method="get">
+  <input
+    type="search"
+    name="q"
+    placeholder="Поиск по штрих-коду"
+    class="form-control"
+  />
+</form>
+{% else %}
+<h1>Войдите в аккаунт</h1>
+{% endif %}
+{% endblock content %}

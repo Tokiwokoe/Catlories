@@ -6,9 +6,9 @@ from profiles.models import Profile
 class Ingredient(models.Model):
     class Meta:
         indexes = [
-            UniqueIndex(fields=['name']),
+            UniqueIndex(fields=['code']),
         ]
-
+    code = models.IntegerField(unique=True)
     name = models.CharField(max_length=128)
     kcal_per_100g = models.IntegerField()
     carbs_per_100g = models.FloatField()
