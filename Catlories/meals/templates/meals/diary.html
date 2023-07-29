@@ -3,67 +3,140 @@
 {% if user.is_authenticated %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <div>
-  <input type="text" id="date-slider" placeholder="Select date" data-input>
+  <input type="text" id="date-slider" placeholder="Выберите дату" data-input>
 </div>
-<div id="meal-list">
-  <!-- Meals for selected date will be displayed here -->
+
+<!-- Breakfast Section -->
+<div style="display: flex; align-items: center;">
+  <a class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/morning_kitty.png" alt="Завтрак">Завтрак</a>
+  <div id="breakfast-list">
+    <!-- Breakfast meals for selected date will be displayed here -->
+  </div>
 </div>
+
+<!-- Lunch Section -->
+<div style="display: flex; align-items: center;">
+  <a class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/eating_kitty.png" alt="Обед" style="width: 64px; height: 64px; margin-right: 10px;">Обед</a>
+  <div id="lunch-list">
+    <!-- Lunch meals for selected date will be displayed here -->
+  </div>
+</div>
+
+<!-- Dinner Section -->
+<div style="display: flex; align-items: center;">
+  <a class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/beer_kitty.png" alt="Ужин" style="width: 64px; height: 64px; margin-right: 10px;">Ужин</a>
+  <div id="dinner-list">
+    <!-- Dinner meals for selected date will be displayed here -->
+  </div>
+</div>
+
+<!-- Snack Section -->
+<div style="display: flex; align-items: center;">
+  <a class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/icecream_kitty.png" alt="Перекус" style="width: 64px; height: 64px; margin-right: 10px;">Перекус</a>
+  <div id="snack-list">
+    <!-- Snack meals for selected date will be displayed here -->
+  </div>
+</div>
+
 {% else %}
 <h1>Войдите в аккаунт</h1>
 {% endif %}
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-  // JavaScript code for handling the date picker
+  // JavaScript code for handling the date picker and displaying meals in different sections
   const dateSlider = document.getElementById('date-slider');
-  const mealList = document.getElementById('meal-list');
+  const mealLists = {
+    'Завтрак': document.getElementById('breakfast-list'),
+    'Обед': document.getElementById('lunch-list'),
+    'Ужин': document.getElementById('dinner-list'),
+    'Перекус': document.getElementById('snack-list'),
+  };
 
-  // Get today's date in the format 'Y-m-d'
-  const today = new Date().toISOString().slice(0, 10);
+  // Function to get the meal_type name from its ID
+  function getMealTypeName(mealTypeId) {
+    switch (mealTypeId) {
+      case 1:
+        return 'Завтрак';
+      case 2:
+        return 'Обед';
+      case 3:
+        return 'Ужин';
+      case 4:
+        return 'Перекус';
+      default:
+        return 'Неизвестный тип';
+    }
+  }
 
   flatpickr(dateSlider, {
     dateFormat: 'Y-m-d',
-    defaultDate: today, // Set today's date as the default value
+    defaultDate: new Date().toISOString().slice(0, 10), // Set today's date as default
     onChange: function(selectedDates, dateStr, instance) {
       fetch(`/diary/get_meals/${dateStr}/`)
         .then(response => response.json())
         .then(data => {
-          let mealHTML = '';
+          // Clear existing meal lists
+          Object.keys(mealLists).forEach(key => mealLists[key].innerHTML = '');
+
+          // Group meals by meal_type and add them to their respective sections
           data.forEach(meal => {
             const mealName = meal.dish.name;
-            mealHTML += `
+            const mealType = getMealTypeName(meal.meal_type.id);
+            const grams = meal.grams;
+
+            const totalCalories = (meal.dish.kcal_per_100g * grams) / 100; // Calculate total calories based on grams
+
+            const mealHTML = `
               <div style="display: flex; align-items: center;">
-                <span>${mealName}</span>
+                <span>${mealName} - ${grams} г - ${totalCalories.toFixed(2)} ккал</span>
               </div>
             `;
+
+            // Add the meal to the corresponding section
+            if (mealType in mealLists) {
+              mealLists[mealType].innerHTML += mealHTML;
+            }
           });
-          mealList.innerHTML = mealHTML;
         })
         .catch(error => {
           console.error('Error fetching meals:', error);
-          mealList.innerHTML = '<p>Failed to fetch meals for the selected date.</p>';
+          Object.keys(mealLists).forEach(key => mealLists[key].innerHTML = '<p>Failed to fetch meals for the selected date.</p>');
         });
     },
   });
 
-  // Trigger the API request with today's date as the default value
-  fetch(`/diary/get_meals/${today}/`)
+  // Automatically fetch meals for today's date when the page loads
+  const todayDate = new Date().toISOString().slice(0, 10);
+  fetch(`/diary/get_meals/${todayDate}/`)
     .then(response => response.json())
     .then(data => {
-      let mealHTML = '';
+      // Clear existing meal lists
+      Object.keys(mealLists).forEach(key => mealLists[key].innerHTML = '');
+
+      // Group meals by meal_type and add them to their respective sections
       data.forEach(meal => {
         const mealName = meal.dish.name;
-        mealHTML += `
+        const mealType = getMealTypeName(meal.meal_type.id);
+        const grams = meal.grams;
+
+        const totalCalories = (meal.dish.kcal_per_100g * grams) / 100; // Calculate total calories based on grams
+
+        const mealHTML = `
           <div style="display: flex; align-items: center;">
-            <span>${mealName}</span>
+            <span>${mealName} - ${grams} г - ${totalCalories.toFixed(2)} ккал</span>
           </div>
         `;
+
+        // Add the meal to the corresponding section
+        if (mealType in mealLists) {
+          mealLists[mealType].innerHTML += mealHTML;
+        }
       });
-      mealList.innerHTML = mealHTML;
     })
     .catch(error => {
       console.error('Error fetching meals:', error);
-      mealList.innerHTML = '<p>Failed to fetch meals for today.</p>';
+      Object.keys(mealLists).forEach(key => mealLists[key].innerHTML = '<p>Failed to fetch meals for today\'s date.</p>');
     });
 </script>
 {% endblock content %}
