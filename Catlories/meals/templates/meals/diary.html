@@ -1,19 +1,69 @@
 {% extends 'progress_analyzer/base.html' %}
 {% block content %}
 {% if user.is_authenticated %}
-<div style="display: flex; align-items: center;">
-  <a class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/morning_kitty.png" alt="Завтрак">Завтрак</a>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<div>
+  <input type="text" id="date-slider" placeholder="Select date" data-input>
 </div>
-<div style="display: flex; align-items: center;">
-  <a class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/eating_kitty.png" alt="Обед" style="width: 64px; height: 64px; margin-right: 10px;">Обед</a>
-</div>
-<div style="display: flex; align-items: center;">
-  <a class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/beer_kitty.png" alt="Ужин" style="width: 64px; height: 64px; margin-right: 10px;">Ужин</a>
-</div>
-<div style="display: flex; align-items: center;">
-  <a class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/icecream_kitty.png" alt="Перекус" style="width: 64px; height: 64px; margin-right: 10px;">Перекус</a>
+<div id="meal-list">
+  <!-- Meals for selected date will be displayed here -->
 </div>
 {% else %}
 <h1>Войдите в аккаунт</h1>
 {% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  // JavaScript code for handling the date picker
+  const dateSlider = document.getElementById('date-slider');
+  const mealList = document.getElementById('meal-list');
+
+  // Get today's date in the format 'Y-m-d'
+  const today = new Date().toISOString().slice(0, 10);
+
+  flatpickr(dateSlider, {
+    dateFormat: 'Y-m-d',
+    defaultDate: today, // Set today's date as the default value
+    onChange: function(selectedDates, dateStr, instance) {
+      fetch(`/diary/get_meals/${dateStr}/`)
+        .then(response => response.json())
+        .then(data => {
+          let mealHTML = '';
+          data.forEach(meal => {
+            const mealName = meal.dish.name;
+            mealHTML += `
+              <div style="display: flex; align-items: center;">
+                <span>${mealName}</span>
+              </div>
+            `;
+          });
+          mealList.innerHTML = mealHTML;
+        })
+        .catch(error => {
+          console.error('Error fetching meals:', error);
+          mealList.innerHTML = '<p>Failed to fetch meals for the selected date.</p>';
+        });
+    },
+  });
+
+  // Trigger the API request with today's date as the default value
+  fetch(`/diary/get_meals/${today}/`)
+    .then(response => response.json())
+    .then(data => {
+      let mealHTML = '';
+      data.forEach(meal => {
+        const mealName = meal.dish.name;
+        mealHTML += `
+          <div style="display: flex; align-items: center;">
+            <span>${mealName}</span>
+          </div>
+        `;
+      });
+      mealList.innerHTML = mealHTML;
+    })
+    .catch(error => {
+      console.error('Error fetching meals:', error);
+      mealList.innerHTML = '<p>Failed to fetch meals for today.</p>';
+    });
+</script>
 {% endblock content %}

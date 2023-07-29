@@ -7,6 +7,7 @@ from django.views import View
 
 
 class ProfileView(View):
+    """ Creates profile of a user right after the registration """
     def get(self, request, username, *args, **kwargs):
         context = {}
         user = User.objects.get(username=username)
@@ -24,6 +25,7 @@ class ProfileView(View):
 
 
 class UpdateProfile(UpdateView):
+    """ Updates user's profile """
     model = Profile
     fields = ['name', 'image']
     template_name = 'profiles/update_profile.html'

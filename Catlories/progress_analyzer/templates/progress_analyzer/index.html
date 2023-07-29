@@ -3,6 +3,7 @@
 {% block content %}
 {% if user.is_authenticated %}
 <h1>Привет, {{ user.profile.name }}! Вот твоя статистика за этот день</h1>
+
 {% else %}
 <h1>Привет, друг</h1>
 {% endif %}

@@ -6,28 +6,28 @@ def index(request):
 
 
 def bmi_calculation(weight: float, height: int):
-    """ Расчет индекса массы тела """
+    """ Calculates body mass index  """
     bmi = weight / ((height / 100) ** 2)
     return bmi
 
 
-def calories_calculation(weight: float, height: int, sex: str, activity_level: str, age: int):
-    """ Подсчет рекоммендуемого количества калорий в сутки """
-    pac = 0  # коэффициент физической активности (physical activity coefficient)
-    calories = 0  # оптимальное кол-во калорий
+def calories_calculation(weight: float, height: int, sex: int, activity_level: int, age: int):
+    """ Calculates recommended daily calories """
+    pac = 0  # physical activity coefficient
+    cal = 0  # optimal daily calories
 
-    if activity_level == 'Низкий':
+    if activity_level == 1:
         pac = 1.4
-    elif activity_level == 'Средний':
+    elif activity_level == 2:
         pac = 1.6
-    elif activity_level == 'Высокий':
+    elif activity_level == 3:
         pac = 1.9
-    elif activity_level == 'Очень высокий':
+    elif activity_level == 4:
         pac = 2.2
 
-    if sex == 'Мужской':
-        calories = 66 + (13.7 * weight) + (5 * height) - (6.76 * age) * pac
-    elif sex == 'Женский':
-        calories = 655 + (9.6 * weight) + (1.8 * height) - (4.7 * age) * pac
+    if sex == 1:
+        cal = 66 + (13.7 * weight) + (5 * height) - (6.76 * age) * pac
+    elif sex == 2:
+        cal = 655 + (9.6 * weight) + (1.8 * height) - (4.7 * age) * pac
 
-    return calories
+    return cal
