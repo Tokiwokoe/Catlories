@@ -4,10 +4,40 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <title>Catlories</title>
+    <style>
+      footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #E1F0EE;
+        padding: 10px 0;
+        text-align: center;
+      }
+      .main-content {
+        padding-top: 100px;
+        padding-bottom: 60px;
+      }
+      header {
+        background-color: #E1F0EE;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background-color: #E1F0EE;
+        padding: 10px 0;
+        text-align: center;
+      }
+    </style>
 </head>
 <body>
     {% include 'progress_analyzer/navigation.html' %}
-    {% block content %}
-    {% endblock content %}
+    <div class="main-content">
+      {% block content %}
+      {% endblock content %}
+    </div>
+    <footer>
+      <a class="nav-link" href="https://github.com/Tokiwokoe/Catlories"><img src="/media/icons/laptop_kitty.png">Мой гитхаб</a>
+    </footer>
 </body>
 </html>

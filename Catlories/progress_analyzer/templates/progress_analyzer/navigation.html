@@ -1,5 +1,6 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'styles.css' %}">
+<header class="header">
 <nav>
     {% if user.is_authenticated %}
     <a class="nav-link" href="{% url 'index' %}"><img src="/media/icons/science_kitty.png" alt="Моя статистика">Моя статистика</a>
@@ -11,3 +12,4 @@
     <a class="nav-link" href="{% url 'account_login' %}">Войти в аккаунт</a>
     {% endif %}
 </nav>
+</header>

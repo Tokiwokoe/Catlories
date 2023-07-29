@@ -42,7 +42,8 @@
 <h1>Войдите в аккаунт</h1>
 {% endif %}
 
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/ru.js"></script>
 <script>
   // JavaScript code for handling the date picker and displaying meals in different sections
   const dateSlider = document.getElementById('date-slider');
@@ -70,6 +71,8 @@
   }
 
   flatpickr(dateSlider, {
+    locale: 'ru',
+    firstDayOfWeek: 1,
     dateFormat: 'Y-m-d',
     defaultDate: new Date().toISOString().slice(0, 10), // Set today's date as default
     onChange: function(selectedDates, dateStr, instance) {
@@ -89,7 +92,7 @@
 
             const mealHTML = `
               <div style="display: flex; align-items: center;">
-                <span>${mealName} - ${grams} г - ${totalCalories.toFixed(2)} ккал</span>
+                <span>${mealName} (${grams} г) - ${totalCalories.toFixed(2)} ккал</span>
               </div>
             `;
 
@@ -124,7 +127,7 @@
 
         const mealHTML = `
           <div style="display: flex; align-items: center;">
-            <span>${mealName} - ${grams} г - ${totalCalories.toFixed(2)} ккал</span>
+            <span>${mealName} (${grams} г) - ${totalCalories.toFixed(2)} ккал</span>
           </div>
         `;
 
