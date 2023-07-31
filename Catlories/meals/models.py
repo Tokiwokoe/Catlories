@@ -11,9 +11,9 @@ class Ingredient(models.Model):
     code = models.IntegerField(unique=True)
     name = models.CharField(max_length=128)
     kcal_per_100g = models.IntegerField()
-    carbs_per_100g = models.FloatField()
-    protein_per_100g = models.FloatField()
-    fat_per_100g = models.FloatField()
+    carbs_per_100g = models.IntegerField()
+    protein_per_100g = models.IntegerField()
+    fat_per_100g = models.IntegerField()
 
     def __str__(self):
         return self.name
