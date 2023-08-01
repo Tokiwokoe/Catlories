@@ -1,0 +1,20 @@
+{% extends 'progress_analyzer/base.html' %}
+{% block content %}
+{% if user.is_authenticated %}
+<div class="container">
+    <div style="margin-top: 75px; text-align: center;">
+        <div>
+            <h1>Название: {{ name }}</h1>
+            <h1>Ккал на 100г: {{ kcal_per_100g }}</h1>
+            <h1>Углеводов на 100г: {{ carbs_per_100g }}</h1>
+            <h1>Белка на 100г: {{ protein_per_100g }}</h1>
+            <h1>Жиров на 100г: {{ fat_per_100g }}</h1>
+            <a href="{% url 'update_profile' user.profile.pk %}"><button type="button">Добавить в приём пищи</button></a>
+            <a href="{% url 'update_profile' user.profile.pk %}"><button type="button">Добавить в избранное</button></a>
+        </div>
+    </div>
+</div>
+{% else %}
+<h1>Войдите в аккаунт</h1>
+{% endif %}
+{% endblock content %}
