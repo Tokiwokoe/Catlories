@@ -16,7 +16,7 @@
 
 <!-- Lunch Section -->
 <div style="display: flex; align-items: center;">
-  <a id="lunch-link" class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/eating_kitty.png" alt="Обед">Обед</a>
+  <a id="lunch-link" class="nav-link" href=""><img src="/media/icons/eating_kitty.png" alt="Обед">Обед</a>
   <div id="lunch-list">
     <!-- Lunch meals for selected date will be displayed here -->
   </div>
@@ -24,7 +24,7 @@
 
 <!-- Dinner Section -->
 <div style="display: flex; align-items: center;">
-  <a id="dinner-link" class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/beer_kitty.png" alt="Ужин">Ужин</a>
+  <a id="dinner-link" class="nav-link" href=""><img src="/media/icons/beer_kitty.png" alt="Ужин">Ужин</a>
   <div id="dinner-list">
     <!-- Dinner meals for selected date will be displayed here -->
   </div>
@@ -32,7 +32,7 @@
 
 <!-- Snack Section -->
 <div style="display: flex; align-items: center;">
-  <a id="snack-link" class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/icecream_kitty.png" alt="Перекус">Перекус</a>
+  <a id="snack-link" class="nav-link" href=""><img src="/media/icons/icecream_kitty.png" alt="Перекус">Перекус</a>
   <div id="snack-list">
     <!-- Snack meals for selected date will be displayed here -->
   </div>
@@ -144,9 +144,9 @@
           Object.keys(mealLists).forEach(key => mealLists[key].innerHTML = '<p>Failed to fetch meals for the selected date.</p>');
         });
       setBreakfastLinkHref(dateStr); // Update the href when date changes
-      setLunchLinkHref(todayDate); // Update the href when date changes
-      setDinnerLinkHref(todayDate); // Update the href when date changes
-      setSnackLinkHref(todayDate); // Update the href when date changes
+      setLunchLinkHref(dateStr); // Update the href when date changes
+      setDinnerLinkHref(dateStr); // Update the href when date changes
+      setSnackLinkHref(dateStr); // Update the href when date changes
     },
   });
 
