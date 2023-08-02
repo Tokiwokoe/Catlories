@@ -143,10 +143,11 @@
           console.error('Error fetching meals:', error);
           Object.keys(mealLists).forEach(key => mealLists[key].innerHTML = '<p>Failed to fetch meals for the selected date.</p>');
         });
-      setBreakfastLinkHref(dateStr); // Update the href when date changes
-      setLunchLinkHref(dateStr); // Update the href when date changes
-      setDinnerLinkHref(dateStr); // Update the href when date changes
-      setSnackLinkHref(dateStr); // Update the href when date changes
+      // Update the href when date changes
+      setBreakfastLinkHref(dateStr);
+      setLunchLinkHref(dateStr);
+      setDinnerLinkHref(dateStr);
+      setSnackLinkHref(dateStr);
     },
   });
 
