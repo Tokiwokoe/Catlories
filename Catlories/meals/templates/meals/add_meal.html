@@ -1,7 +1,7 @@
 {% extends 'progress_analyzer/base.html' %}
 {% block content %}
 {% if user.is_authenticated %}
-<form action="{% url 'ingredient_search'%}" method="get">
+<form action="{% url 'ingredient_search' meal_type date %}" method="get">
   <input
     type="search"
     name="code"

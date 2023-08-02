@@ -39,4 +39,4 @@ class Meal(models.Model):
     date = models.DateField()
 
     def __str__(self):
-        return f'{self.meal_type}, {self.dish}, {self.date}'
+        return f'{self.user.name}: {self.meal_type}, {self.dish}, {self.date}'

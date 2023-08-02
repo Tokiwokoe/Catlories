@@ -74,7 +74,7 @@
   function setBreakfastLinkHref(dateStr) {
     const breakfastLink = document.getElementById('breakfast-link');
     const baseUrl = "{% url 'add_meal' %}";
-    const mealType = "breakfast";
+    const mealType = "1";
     const url = `${baseUrl}?meal_type=${mealType}&date=${dateStr}`;
     breakfastLink.setAttribute('href', url);
   }
