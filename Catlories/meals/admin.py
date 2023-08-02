@@ -5,3 +5,4 @@ from .models import *
 admin.site.register(Ingredient)
 admin.site.register(MealType)
 admin.site.register(Meal)
+admin.site.register(Favorite)

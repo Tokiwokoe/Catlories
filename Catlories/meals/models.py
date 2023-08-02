@@ -25,7 +25,7 @@ class MealType(models.Model):
             UniqueIndex(fields=['name']),
         ]
 
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
 
     def __str__(self):
         return self.name
@@ -40,3 +40,11 @@ class Meal(models.Model):
 
     def __str__(self):
         return f'{self.user.name}: {self.meal_type}, {self.dish}, {self.date}'
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.user.name}: {self.ingredient.name}'

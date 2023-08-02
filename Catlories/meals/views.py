@@ -1,4 +1,3 @@
-from profiles.views import ProfileView
 from django.core.handlers import exception
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -7,7 +6,7 @@ from django.views import View, defaults
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Meal, Ingredient, MealType
+from .models import Meal, Ingredient, MealType, Favorite
 from .serializers import MealSerializer
 from datetime import datetime
 
@@ -56,11 +55,19 @@ def add_meal(request):
     return render(request, 'meals/add_meal.html', context)
 
 
-class AddIngredientView(View):
+class AddIngredientView(APIView):
     def get(self, request, meal_type, date, code):
         meal_type_id = MealType.objects.get(id=meal_type)
         dish_id = Ingredient.objects.get(code=code)
         grams = request.GET.get('grams', None)
         meal = Meal(user_id=request.user.id, meal_type=meal_type_id, dish=dish_id, grams=grams, date=date)
         meal.save()
+        return HttpResponseRedirect(reverse('diary'))
+
+
+class AddToFavoritesView(APIView):
+    def get(self, request, code):
+        dish_id = Ingredient.objects.get(code=code)
+        fav = Favorite(user_id=request.user.id, ingredient=dish_id)
+        fav.save()
         return HttpResponseRedirect(reverse('diary'))
