@@ -16,7 +16,7 @@
 
 <!-- Lunch Section -->
 <div style="display: flex; align-items: center;">
-  <a class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/eating_kitty.png" alt="Обед" style="width: 64px; height: 64px; margin-right: 10px;">Обед</a>
+  <a id="lunch-link" class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/eating_kitty.png" alt="Обед">Обед</a>
   <div id="lunch-list">
     <!-- Lunch meals for selected date will be displayed here -->
   </div>
@@ -24,7 +24,7 @@
 
 <!-- Dinner Section -->
 <div style="display: flex; align-items: center;">
-  <a class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/beer_kitty.png" alt="Ужин" style="width: 64px; height: 64px; margin-right: 10px;">Ужин</a>
+  <a id="dinner-link" class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/beer_kitty.png" alt="Ужин">Ужин</a>
   <div id="dinner-list">
     <!-- Dinner meals for selected date will be displayed here -->
   </div>
@@ -32,7 +32,7 @@
 
 <!-- Snack Section -->
 <div style="display: flex; align-items: center;">
-  <a class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/icecream_kitty.png" alt="Перекус" style="width: 64px; height: 64px; margin-right: 10px;">Перекус</a>
+  <a id="snack-link" class="nav-link" href="{% url 'add_meal'%}"><img src="/media/icons/icecream_kitty.png" alt="Перекус">Перекус</a>
   <div id="snack-list">
     <!-- Snack meals for selected date will be displayed here -->
   </div>
@@ -79,14 +79,74 @@
     breakfastLink.setAttribute('href', url);
   }
 
+  // Function to set the href attribute of the lunch link
+  function setLunchLinkHref(dateStr) {
+    const lunchLink = document.getElementById('lunch-link');
+    const baseUrl = "{% url 'add_meal' %}";
+    const mealType = "2";
+    const url = `${baseUrl}?meal_type=${mealType}&date=${dateStr}`;
+    lunchLink.setAttribute('href', url);
+  }
+
+  // Function to set the href attribute of the dinner link
+  function setDinnerLinkHref(dateStr) {
+    const dinnerLink = document.getElementById('dinner-link');
+    const baseUrl = "{% url 'add_meal' %}";
+    const mealType = "3";
+    const url = `${baseUrl}?meal_type=${mealType}&date=${dateStr}`;
+    dinnerLink.setAttribute('href', url);
+  }
+
+  // Function to set the href attribute of the snack link
+  function setSnackLinkHref(dateStr) {
+    const snackLink = document.getElementById('snack-link');
+    const baseUrl = "{% url 'add_meal' %}";
+    const mealType = "4";
+    const url = `${baseUrl}?meal_type=${mealType}&date=${dateStr}`;
+    snackLink.setAttribute('href', url);
+  }
+
+
   flatpickr(dateSlider, {
     locale: 'ru',
     firstDayOfWeek: 1,
     dateFormat: 'Y-m-d',
     defaultDate: new Date().toISOString().slice(0, 10), // Set today's date as default
     onChange: function(selectedDates, dateStr, instance) {
-      // ... (existing code for displaying meals) ...
+      fetch(`/diary/get_meals/${dateStr}/`)
+        .then(response => response.json())
+        .then(data => {
+          // Clear existing meal lists
+          Object.keys(mealLists).forEach(key => mealLists[key].innerHTML = '');
+
+          // Group meals by meal_type and add them to their respective sections
+          data.forEach(meal => {
+            const mealName = meal.dish.name;
+            const mealType = getMealTypeName(meal.meal_type.id);
+            const grams = meal.grams;
+
+            const totalCalories = (meal.dish.kcal_per_100g * grams) / 100; // Calculate total calories based on grams
+
+            const mealHTML = `
+              <div style="display: flex; align-items: center;">
+                <span>${mealName} (${grams} г) - ${totalCalories.toFixed(2)} ккал</span>
+              </div>
+            `;
+
+            // Add the meal to the corresponding section
+            if (mealType in mealLists) {
+              mealLists[mealType].innerHTML += mealHTML;
+            }
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching meals:', error);
+          Object.keys(mealLists).forEach(key => mealLists[key].innerHTML = '<p>Failed to fetch meals for the selected date.</p>');
+        });
       setBreakfastLinkHref(dateStr); // Update the href when date changes
+      setLunchLinkHref(todayDate); // Update the href when date changes
+      setDinnerLinkHref(todayDate); // Update the href when date changes
+      setSnackLinkHref(todayDate); // Update the href when date changes
     },
   });
 
@@ -119,6 +179,9 @@
       });
 
       setBreakfastLinkHref(todayDate); // Update the breakfast link href for today's date
+      setLunchLinkHref(todayDate); // Update the lunch link href for today's date
+      setDinnerLinkHref(todayDate); // Update the dinner link href for today's date
+      setSnackLinkHref(todayDate); // Update the snack link href for today's date
     })
     .catch(error => {
       console.error('Error fetching meals:', error);

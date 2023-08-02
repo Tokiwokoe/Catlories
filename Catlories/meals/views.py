@@ -60,6 +60,7 @@ class AddIngredientView(View):
     def get(self, request, meal_type, date, code):
         meal_type_id = MealType.objects.get(id=meal_type)
         dish_id = Ingredient.objects.get(code=code)
-        meal = Meal(user_id=request.user.id, meal_type=meal_type_id, dish=dish_id, grams=100, date=date)
+        grams = request.GET.get('grams', None)
+        meal = Meal(user_id=request.user.id, meal_type=meal_type_id, dish=dish_id, grams=grams, date=date)
         meal.save()
         return HttpResponseRedirect(reverse('diary'))

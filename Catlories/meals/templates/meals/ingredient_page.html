@@ -1,7 +1,6 @@
 {% extends 'progress_analyzer/base.html' %}
 {% block content %}
 {% if user.is_authenticated %}
-<!-- http://127.0.0.1:8000/diary/ingredient_search/?meal_type=breakfast&date=2023-08-02&code=1111 -->
 <div class="container">
     <div style="margin-top: 75px; text-align: center;">
         <div>
@@ -10,7 +9,15 @@
             <h1>Углеводов на 100г: {{ carbs_per_100g }}</h1>
             <h1>Белка на 100г: {{ protein_per_100g }}</h1>
             <h1>Жиров на 100г: {{ fat_per_100g }}</h1>
-            <a href="{% url 'add_ingredient' meal_type date code%}"><button type="button">Добавить в приём пищи</button></a>
+            <form action="{% url 'add_ingredient' meal_type date code %}" method="get">
+              <input
+                type="search"
+                name="grams"
+                placeholder="Введите кол-во грамм"
+                class="form-control"
+              />
+              <button type="submit">Добавить в приём пищи</button>
+            </form>
             <a href="{% url 'update_profile' user.profile.pk %}"><button type="button">Добавить в избранное</button></a>
         </div>
     </div>
