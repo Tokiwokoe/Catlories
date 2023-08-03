@@ -1,96 +1,72 @@
-from django.core.handlers import exception
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.views import View, defaults
 from django.views.generic import ListView
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
-from .models import Meal, Ingredient, MealType, Favorite
-from .serializers import MealSerializer
-from datetime import datetime
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .models import Favorite
+from .services import _add_to_favorite, _delete_favorite, _find_ingredient_by_code, _add_ingredient_in_diary, \
+    _get_meals_by_date
 
 
-def diary(request):
-    return render(request, 'meals/diary.html')
-
-
-def add_meal(request):
-    context = {}
-    context['meal_type'] = request.GET.get('meal_type', None)
-    context['date'] = request.GET.get('date', None)
-    return render(request, 'meals/add_meal.html', context)
-
-
-class GetMealsByDate(APIView):
-    def get(self, request, date_str):
-        try:
-            date = datetime.strptime(date_str, '%Y-%m-%d').date()
-            meals = Meal.objects.filter(date=date, user_id=request.user.id)
-            serializer = MealSerializer(meals, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': 'Неверная дата'}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class IngredientSearchView(View):
-    def get(self, request, meal_type, date):
-        code = request.GET.get('code', None)
-        if code:
-            try:
-                context = {}
-                ingredient = Ingredient.objects.get(code=code)
-                context['meal_type'] = meal_type
-                context['date'] = date
-                context['code'] = code
-                context['name'] = ingredient.name
-                context['kcal_per_100g'] = ingredient.kcal_per_100g
-                context['carbs_per_100g'] = ingredient.carbs_per_100g
-                context['protein_per_100g'] = ingredient.protein_per_100g
-                context['fat_per_100g'] = ingredient.fat_per_100g
-                return render(request, 'meals/ingredient_page.html', context)
-            except Ingredient.DoesNotExist:
-                return defaults.page_not_found(request, exception, template_name='404.html')
-        else:
-            return defaults.page_not_found(request, exception, template_name='404.html')
-
-
-class AddIngredientView(APIView):
-    def get(self, request, meal_type, date, code):
-        meal_type_id = MealType.objects.get(id=meal_type)
-        dish_id = Ingredient.objects.get(code=code)
-        grams = request.GET.get('grams', None)
-        meal = Meal.objects.filter(user_id=request.user.id, meal_type=meal_type_id, dish=dish_id, date=date)
-        if meal:
-            meal = Meal.objects.get(user_id=request.user.id, meal_type=meal_type_id, dish=dish_id, date=date)
-            meal.grams = meal.grams + int(grams)
-        else:
-            meal = Meal(user_id=request.user.id, meal_type=meal_type_id, dish=dish_id, grams=grams, date=date)
-        meal.save()
-        return HttpResponseRedirect(reverse('diary'))
-
-
-class AddToFavoritesView(APIView):
-    def get(self, request, code):
-        dish_id = Ingredient.objects.get(code=code)
-        if not Favorite.objects.filter(user_id=request.user.id, ingredient=dish_id):
-            fav = Favorite(user_id=request.user.id, ingredient=dish_id)
-            fav.save()
-        return HttpResponseRedirect(reverse('favorite_list'))
-
-
-class FavoritesView(ListView):
+class FavoritesListView(ListView):
+    """List all food added to favorites"""
     model = Favorite
     paginate_by = 100
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         return context
 
 
-class DeleteFavorite(APIView):
-    def get(self, request, id):
-        fav = Favorite.objects.get(id=id)
-        fav.delete()
-        return HttpResponseRedirect(reverse('favorite_list'))
+class GetMealsByDate(APIView):
+    """List all food added on selected date"""
+    def get(self, request, date_str) -> Response:
+        user_id = request.user.id
+        serializer = _get_meals_by_date(date_str=date_str, user_id=user_id)
+        if serializer:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Неверная дата'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+def ingredient_search_by_code(request, meal_type: int, date: str) -> HttpResponseRedirect:
+    """Find an ingredient by its unique code"""
+    code = request.GET.get('code')
+    context = _find_ingredient_by_code(request=request, code=code, meal_type=meal_type, date=date)
+    return HttpResponseRedirect('meals/ingredient_page.html', context)
+
+
+def add_ingredient_in_diary(request, meal_type: int, date: str, code: int) -> HttpResponseRedirect:
+    """Add ingredient in a selected meal type and date"""
+    grams = request.GET.get('grams')
+    user_id = request.user.id
+    _add_ingredient_in_diary(meal_type=meal_type, date=date, code=code, grams=grams, user_id=user_id)
+    return HttpResponseRedirect(reverse('diary'))
+
+
+def delete_from_favorite_list(request, id: int) -> HttpResponseRedirect:
+    """Remove a food product from favorite list"""
+    _delete_favorite(favorite_id=id)
+    return HttpResponseRedirect(reverse('favorite_list'))
+
+
+def add_to_favorite_list(request, code: int) -> HttpResponseRedirect:
+    """Add a food product from favorite list"""
+    user_id = request.user.id
+    _add_to_favorite(code=code, user_id=user_id)
+    return HttpResponseRedirect(reverse('favorite_list'))
+
+
+def diary(request):
+    """Render food diary page"""
+    return render(request, 'meals/diary.html')
+
+
+def add_meal(request):
+    """Render page to search and add meals"""
+    context = {}
+    context['meal_type'] = request.GET.get('meal_type')
+    context['date'] = request.GET.get('date')
+    return render(request, 'meals/add_meal.html', context)
