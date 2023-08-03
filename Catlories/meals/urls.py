@@ -1,6 +1,13 @@
 from django.urls import path
 from meals import views
-from meals.views import GetMealsByDate, IngredientSearchView, AddIngredientView, AddToFavoritesView, FavoritesView, DeleteFavorite
+from meals.views import (
+    AddIngredientView,
+    AddToFavoritesView,
+    DeleteFavorite,
+    FavoritesView,
+    GetMealsByDate,
+    IngredientSearchView
+)
 
 urlpatterns = [
     path('', views.diary, name='diary'),

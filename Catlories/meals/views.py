@@ -61,7 +61,12 @@ class AddIngredientView(APIView):
         meal_type_id = MealType.objects.get(id=meal_type)
         dish_id = Ingredient.objects.get(code=code)
         grams = request.GET.get('grams', None)
-        meal = Meal(user_id=request.user.id, meal_type=meal_type_id, dish=dish_id, grams=grams, date=date)
+        meal = Meal.objects.filter(user_id=request.user.id, meal_type=meal_type_id, dish=dish_id, date=date)
+        if meal:
+            meal = Meal.objects.get(user_id=request.user.id, meal_type=meal_type_id, dish=dish_id, date=date)
+            meal.grams = meal.grams + int(grams)
+        else:
+            meal = Meal(user_id=request.user.id, meal_type=meal_type_id, dish=dish_id, grams=grams, date=date)
         meal.save()
         return HttpResponseRedirect(reverse('diary'))
 
@@ -69,9 +74,10 @@ class AddIngredientView(APIView):
 class AddToFavoritesView(APIView):
     def get(self, request, code):
         dish_id = Ingredient.objects.get(code=code)
-        fav = Favorite(user_id=request.user.id, ingredient=dish_id)
-        fav.save()
-        return HttpResponseRedirect(reverse('diary'))
+        if not Favorite.objects.filter(user_id=request.user.id, ingredient=dish_id):
+            fav = Favorite(user_id=request.user.id, ingredient=dish_id)
+            fav.save()
+        return HttpResponseRedirect(reverse('favorite_list'))
 
 
 class FavoritesView(ListView):
