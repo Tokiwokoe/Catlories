@@ -1,10 +1,7 @@
 from django.core.handlers import exception
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse
 from django.utils.datetime_safe import datetime
 from django.views import defaults
-from rest_framework import status
-from rest_framework.response import Response
-
 from meals.models import Ingredient, Favorite, Meal, MealType
 from meals.serializers import MealSerializer
 

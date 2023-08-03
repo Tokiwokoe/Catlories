@@ -23,19 +23,16 @@ class FavoritesListView(ListView):
 class GetMealsByDate(APIView):
     """List all food added on selected date"""
     def get(self, request, date_str) -> Response:
-        user_id = request.user.id
-        serializer = _get_meals_by_date(date_str=date_str, user_id=user_id)
-        if serializer:
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response({'error': 'Неверная дата'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = _get_meals_by_date(date_str=date_str, user_id=request.user.id)
+        return Response(serializer.data, status=status.HTTP_200_OK) if serializer else Response(
+            {'error': 'Wrong date'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 def ingredient_search_by_code(request, meal_type: int, date: str) -> HttpResponseRedirect:
     """Find an ingredient by its unique code"""
     code = request.GET.get('code')
     context = _find_ingredient_by_code(request=request, code=code, meal_type=meal_type, date=date)
-    return HttpResponseRedirect('meals/ingredient_page.html', context)
+    return render(request, 'meals/ingredient_page.html', context)
 
 
 def add_ingredient_in_diary(request, meal_type: int, date: str, code: int) -> HttpResponseRedirect:
