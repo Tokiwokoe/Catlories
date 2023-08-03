@@ -1,0 +1,11 @@
+{% extends 'progress_analyzer/base.html' %}
+
+{% block content %}
+<ul style="font-size: 24px;">
+{% for fav in object_list %}
+    <li><em>Название:</em> {{ fav.ingredient.name }} - <em>Ккал на 100г:</em> {{ fav.ingredient.kcal_per_100g }} - <em>Углеводов на 100г:</em> {{ fav.ingredient.carbs_per_100g }} - <em>Белка на 100г:</em> {{ fav.ingredient.protein_per_100g }} - <em>Жиров на 100г:</em> {{ fav.ingredient.fat_per_100g }}<a href=" {% url 'delete_favorite' fav.id %}"><button>Удалить</button></a></li>
+{% empty %}
+    <li>Вы еще не добавили продукты в избранное</li>
+{% endfor %}
+</ul>
+{% endblock content %}

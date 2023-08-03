@@ -1,6 +1,6 @@
 from django.urls import path
 from meals import views
-from meals.views import GetMealsByDate, IngredientSearchView, AddIngredientView, AddToFavoritesView
+from meals.views import GetMealsByDate, IngredientSearchView, AddIngredientView, AddToFavoritesView, FavoritesView, DeleteFavorite
 
 urlpatterns = [
     path('', views.diary, name='diary'),
@@ -9,4 +9,6 @@ urlpatterns = [
     path('ingredient_search/meal_type=<str:meal_type>&date=<date>', IngredientSearchView.as_view(), name='ingredient_search'),
     path('add_ingredient/meal_type=<str:meal_type>&date=<date>&code=<code>', AddIngredientView.as_view(), name='add_ingredient'),
     path('add_to_favorites/code=<int:code>', AddToFavoritesView.as_view(), name='add_to_favorites'),
+    path('favorites/', FavoritesView.as_view(), name='favorite_list'),
+    path('delete_favorite/<int:id>', DeleteFavorite.as_view(), name='delete_favorite'),
 ]

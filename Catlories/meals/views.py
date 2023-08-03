@@ -3,12 +3,24 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View, defaults
+from django.views.generic import ListView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Meal, Ingredient, MealType, Favorite
 from .serializers import MealSerializer
 from datetime import datetime
+
+
+def diary(request):
+    return render(request, 'meals/diary.html')
+
+
+def add_meal(request):
+    context = {}
+    context['meal_type'] = request.GET.get('meal_type', None)
+    context['date'] = request.GET.get('date', None)
+    return render(request, 'meals/add_meal.html', context)
 
 
 class GetMealsByDate(APIView):
@@ -44,17 +56,6 @@ class IngredientSearchView(View):
             return defaults.page_not_found(request, exception, template_name='404.html')
 
 
-def diary(request):
-    return render(request, 'meals/diary.html')
-
-
-def add_meal(request):
-    context = {}
-    context['meal_type'] = request.GET.get('meal_type', None)
-    context['date'] = request.GET.get('date', None)
-    return render(request, 'meals/add_meal.html', context)
-
-
 class AddIngredientView(APIView):
     def get(self, request, meal_type, date, code):
         meal_type_id = MealType.objects.get(id=meal_type)
@@ -71,3 +72,19 @@ class AddToFavoritesView(APIView):
         fav = Favorite(user_id=request.user.id, ingredient=dish_id)
         fav.save()
         return HttpResponseRedirect(reverse('diary'))
+
+
+class FavoritesView(ListView):
+    model = Favorite
+    paginate_by = 100
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class DeleteFavorite(APIView):
+    def get(self, request, id):
+        fav = Favorite.objects.get(id=id)
+        fav.delete()
+        return HttpResponseRedirect(reverse('favorite_list'))
