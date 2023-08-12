@@ -27,7 +27,7 @@ class ProfileView(View):
 class UpdateProfile(UpdateView):
     """ Updates user's profile """
     model = Profile
-    fields = ['name', 'image']
+    fields = ['image', 'name', 'sex', 'birth_date', 'weight_kg', 'height_cm', 'activity_level', 'goal']
     template_name = 'profiles/update_profile.html'
 
     def form_valid(self, form):
@@ -36,4 +36,4 @@ class UpdateProfile(UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('profile', {'username': self.object.user.username})
+        return reverse('profile', kwargs={'username': self.object.user.username})
