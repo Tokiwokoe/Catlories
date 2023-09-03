@@ -195,7 +195,7 @@ celerybeat-schedule
 *.sage.py
 
 # dotenv
-.env
+Catlories/.env
 
 # virtualenv
 .venv
