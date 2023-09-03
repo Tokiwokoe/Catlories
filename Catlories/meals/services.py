@@ -41,6 +41,8 @@ def _find_ingredient_by_code(request, code: int, meal_type: int, date: str) -> d
 
 
 def _add_ingredient_in_diary(meal_type: int, date: str, code: int, grams: int, user_id: int) -> None:
+    if grams == '' or int(grams) < 1:
+        grams = 100
     meal_type_id = MealType.objects.get(id=meal_type)
     dish_id = Ingredient.objects.get(code=code)
     meal = Meal.objects.filter(user_id=user_id, meal_type=meal_type_id, dish=dish_id, date=date)

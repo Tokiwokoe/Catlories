@@ -63,7 +63,6 @@ def diary(request):
 
 def add_meal(request):
     """Render page to search and add meals"""
-    context = {}
-    context['meal_type'] = request.GET.get('meal_type')
-    context['date'] = request.GET.get('date')
+    context = {'meal_type': request.GET.get('meal_type'),
+               'date': request.GET.get('date')}
     return render(request, 'meals/add_meal.html', context)
