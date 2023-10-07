@@ -3,14 +3,16 @@ from datetime import date
 
 
 def index(request):
-    context = {'cal': calories_calculation(weight=float(request.user.profile.weight_kg),
-                                           height=int(request.user.profile.height_cm),
-                                           sex=str(request.user.profile.sex),
-                                           activity_level=str(request.user.profile.activity_level),
-                                           age=int(date.today().year - request.user.profile.birth_date.year)),
-               'bmi': bmi_calculation(weight=request.user.profile.weight_kg,
-                                      height=request.user.profile.height_cm)}
-
+    if request.user.is_authenticated:
+        context = {'cal': calories_calculation(weight=float(request.user.profile.weight_kg),
+                                               height=int(request.user.profile.height_cm),
+                                               sex=str(request.user.profile.sex),
+                                               activity_level=str(request.user.profile.activity_level),
+                                               age=int(date.today().year - request.user.profile.birth_date.year)),
+                   'bmi': bmi_calculation(weight=request.user.profile.weight_kg,
+                                          height=request.user.profile.height_cm)}
+    else:
+        context = {}
     return render(request, 'progress_analyzer/index.html', context)
 
 
